@@ -11,6 +11,11 @@ $(function () {
   const menusWidth = $('#menus').width()
   const sidebarWidth = $('#sidebar').width() || 300
 
+  var full_page = document.getElementsByClassName("full_page");
+  if (full_page.length != 0) {
+    full_page[0].style.background = "transparent";
+  }
+
   const adjustMenu = function (n) {
     const $nav = $('#nav')
     let t
