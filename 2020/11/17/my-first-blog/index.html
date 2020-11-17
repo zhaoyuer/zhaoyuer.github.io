@@ -1,0 +1,222 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>智能合约空投 | 可乐不加冰</title><meta name="author" content="宇昭"><meta name="copyright" content="宇昭"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><meta name="description" content="钱包项目要用到批量归集，故做了简单的ETH智能合约———–空投 环境搭建  1 remix   2 nodejs    3 web3j 4.5.5 私链搭建 1进入私链根目录创建创世初始化文件 genesis.json 1234567891011121314151617181920212223242526  &amp;#123;  &quot;config&quot;: &amp;#123;    &quot;c">
+<meta property="og:type" content="article">
+<meta property="og:title" content="智能合约空投">
+<meta property="og:url" content="http://example.com/2020/11/17/my-first-blog/index.html">
+<meta property="og:site_name" content="可乐不加冰">
+<meta property="og:description" content="钱包项目要用到批量归集，故做了简单的ETH智能合约———–空投 环境搭建  1 remix   2 nodejs    3 web3j 4.5.5 私链搭建 1进入私链根目录创建创世初始化文件 genesis.json 1234567891011121314151617181920212223242526  &amp;#123;  &quot;config&quot;: &amp;#123;    &quot;c">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg">
+<meta property="article:published_time" content="2020-11-17T02:18:56.000Z">
+<meta property="article:modified_time" content="2020-11-17T06:00:06.081Z">
+<meta property="article:author" content="宇昭">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2020/11/17/my-first-blog/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  hexoversion: '5.2.0',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  ClickShowText: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  justifiedGallery: {
+    js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+    css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+};
+
+var saveToLocal = {
+  set: function setWithExpiry(key, value, ttl) {
+    const now = new Date()
+    const expiryDay = ttl * 86400000
+    const item = {
+      value: value,
+      expiry: now.getTime() + expiryDay,
+    }
+    localStorage.setItem(key, JSON.stringify(item))
+  },
+
+  get: function getWithExpiry(key) {
+    const itemStr = localStorage.getItem(key)
+
+    if (!itemStr) {
+      return undefined
+    }
+    const item = JSON.parse(itemStr)
+    const now = new Date()
+
+    if (now.getTime() > item.expiry) {
+      localStorage.removeItem(key)
+      return undefined
+    }
+    return item.value
+  }
+}</script><script id="config_change">var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isSidebar: true,
+  postUpdate: '2020-11-17 14:00:06'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(function () {
+  window.activateDarkMode = function () {
+    document.documentElement.setAttribute('data-theme', 'dark')
+    if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+    }
+  }
+  window.activateLightMode = function () {
+    document.documentElement.setAttribute('data-theme', 'light')
+    if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+    }
+  }
+
+  const autoChangeMode = 'false'
+  const t = saveToLocal.get('theme')
+  if (autoChangeMode === '1') {
+    const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+    const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+    const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+    if (t === undefined) {
+      if (isLightMode) activateLightMode()
+      else if (isDarkMode) activateDarkMode()
+      else if (isNotSpecified || hasNoSupport) {
+        const now = new Date()
+        const hour = now.getHours()
+        const isNight = hour <= 6 || hour >= 18
+        isNight ? activateDarkMode() : activateLightMode()
+      }
+      window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+        if (saveToLocal.get('theme') === undefined) {
+          e.matches ? activateDarkMode() : activateLightMode()
+        }
+      })
+    } else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else if (autoChangeMode === '2') {
+    const now = new Date()
+    const hour = now.getHours()
+    const isNight = hour <= 6 || hour >= 18
+    if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+    else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else {
+    if (t === 'dark') activateDarkMode()
+    else if (t === 'light') activateLightMode()
+  }
+})()</script><link rel="stylesheet" href="/source/css/yu.css"><meta name="generator" content="Hexo 5.2.0"></head><body><div id="mobile-sidebar"><div id="menu_mask"></div><div id="mobile-sidebar-menus"><div class="mobile_author_icon"><img class="avatar-img" src="/null" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="mobile_post_data"><div class="mobile_data_item is-center"><div class="mobile_data_link"><a href="/archives/"><div class="headline">文章</div><div class="length_num">2</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fa fa-heartbeat"></i><span> 清单</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/music/"><i class="fa-fw fa fa-music"></i><span> 音乐</span></a></li><li><a class="site-page" href="/Gallery/"><i class="fa-fw fa fa-picture-o"></i><span> 照片</span></a></li><li><a class="site-page" href="/movies/"><i class="fa-fw fa fa-film"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fa fa-heart"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page" href="/messageboard/"><i class="fa-fw fa fa-link"></i><span> 留言板</span></a></div></div></div></div><div id="body-wrap"><div id="sidebar"><i class="fas fa-arrow-right on" id="toggle-sidebar"></i><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar">     </div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA"><span class="toc-number">1.</span> <span class="toc-text">环境搭建</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%A7%81%E9%93%BE%E6%90%AD%E5%BB%BA"><span class="toc-number">2.</span> <span class="toc-text">私链搭建</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%88%E7%BA%A6"><span class="toc-number">3.</span> <span class="toc-text">合约</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ReadMe"><span class="toc-number">4.</span> <span class="toc-text">ReadMe</span></a></li></ol></div></div></div><header class="post-bg" id="page-header" style="background-image: url(https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg)"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">可乐不加冰</a></span><span id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fa fa-heartbeat"></i><span> 清单</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/music/"><i class="fa-fw fa fa-music"></i><span> 音乐</span></a></li><li><a class="site-page" href="/Gallery/"><i class="fa-fw fa fa-picture-o"></i><span> 照片</span></a></li><li><a class="site-page" href="/movies/"><i class="fa-fw fa fa-film"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fa fa-heart"></i><span> 关于</span></a></div><div class="menus_item"><a class="site-page" href="/messageboard/"><i class="fa-fw fa fa-link"></i><span> 留言板</span></a></div></div><span class="close" id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></span></span></nav><div id="post-info"><div id="post-title"><div class="posttitle">智能合约空投</div></div><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2020-11-17T02:18:56.000Z" title="发表于 2020-11-17 10:18:56">2020-11-17</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2020-11-17T06:00:06.081Z" title="更新于 2020-11-17 14:00:06">2020-11-17</time></span></div><div class="meta-secondline"> <span class="post-meta-separator">|</span><span class="post-meta-pv-cv"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout_post" id="content-inner"><article id="post"><div class="post-content" id="article-container"><p>钱包项目要用到批量归集，故做了简单的ETH智能合约———–空投</p>
+<h2 id="环境搭建"><a href="#环境搭建" class="headerlink" title="环境搭建"></a>环境搭建</h2><p>  1 <a target="_blank" rel="noopener" href="https://remix.ethereum.org/">remix</a></p>
+<p>  2 nodejs </p>
+<p>  3 web3j 4.5.5</p>
+<h2 id="私链搭建"><a href="#私链搭建" class="headerlink" title="私链搭建"></a>私链搭建</h2><p> 1进入私链根目录创建创世初始化文件 genesis.json</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">  &#123;</span><br><span class="line">  &quot;config&quot;: &#123;</span><br><span class="line">    &quot;chainId&quot;: 666,</span><br><span class="line">    &quot;homesteadBlock&quot;: 0,</span><br><span class="line">    &quot;eip150Block&quot;: 0,</span><br><span class="line">    &quot;eip150Hash&quot;: &quot;0x0000000000000000000000000000000000000000000000000000000000000000&quot;,</span><br><span class="line">    &quot;eip155Block&quot;: 0,</span><br><span class="line">    &quot;eip158Block&quot;: 0,</span><br><span class="line">    &quot;byzantiumBlock&quot;: 0,</span><br><span class="line">    &quot;constantinopleBlock&quot;: 0,</span><br><span class="line">    &quot;petersburgBlock&quot;: 0,</span><br><span class="line">    &quot;istanbulBlock&quot;: 0,</span><br><span class="line">    &quot;ethash&quot;: &#123;&#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  &quot;nonce&quot;: &quot;0x0&quot;,</span><br><span class="line">  &quot;timestamp&quot;: &quot;0x5ddf8f3e&quot;,</span><br><span class="line">  &quot;extraData&quot;: &quot;0x0000000000000000000000000000000000000000000000000000000000000000&quot;,</span><br><span class="line">  &quot;gasLimit&quot;: &quot;0xffffffff&quot;,</span><br><span class="line">  &quot;difficulty&quot;: &quot;0x002&quot;,</span><br><span class="line">  &quot;mixHash&quot;: &quot;0x0000000000000000000000000000000000000000000000000000000000000000&quot;,</span><br><span class="line">  &quot;coinbase&quot;: &quot;0x0000000000000000000000000000000000000000&quot;,</span><br><span class="line">  &quot;alloc&quot;: &#123; &#125;,</span><br><span class="line">  &quot;number&quot;: &quot;0x0&quot;,</span><br><span class="line">  &quot;gasUsed&quot;: &quot;0x0&quot;,</span><br><span class="line">  &quot;parentHash&quot;: &quot;0x0000000000000000000000000000000000000000000000000000000000000000&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>关键参数</th>
+<th>意义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>chainId</td>
+<td>私链ID -1为主网 自己搭建不能为该值</td>
+</tr>
+<tr>
+<td>difficulty</td>
+<td>挖矿的难度 长时间挖不到可以减小该值</td>
+</tr>
+<tr>
+<td>gasLimit</td>
+<td>转账智能合约执行手续费限制</td>
+</tr>
+</tbody></table>
+<p>2 私链初始化</p>
+<p><code>geth -datadir &quot;D:\soft\eth&quot;   init genesis.json </code></p>
+<p>3私链开启客户端</p>
+<p><code>geth --datadir &quot;D:\soft\eth&quot;    --networkid 666 --port 61910 --rpc --rpcport 8545 console 2&gt;&gt;geth.log  –allow-insecure-unlock  init genesis.json</code></p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>意义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>console 2&gt;&gt;geth.log</td>
+<td>日志输出到根目录文件</td>
+</tr>
+<tr>
+<td>–allow-insecure-unlock</td>
+<td>账户解锁安全</td>
+</tr>
+</tbody></table>
+<p>4 账户</p>
+<p><code>personal.newAccount(1)</code></p>
+<p>生成密码为1的账户 保存在根目录的keystore文件夹下</p>
+<p><code>personal.unlockAccount(eth.accounts[0])</code></p>
+<p>账户解锁</p>
+<p><code>miner.setEtherbase(eth.accounts[0])</code></p>
+<p>账户作为挖矿收益账户</p>
+<p>5挖矿</p>
+<p><code>miner.start()</code></p>
+<p>开启挖矿 （）内可填整数表示挖矿线程数</p>
+<p>第一次开启挖矿会有DAG文件生成较慢</p>
+<p><code>miner.stop()</code></p>
+<p>关闭挖矿</p>
+<h2 id="合约"><a href="#合约" class="headerlink" title="合约"></a>合约</h2><p>1使用remix编译合约代码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">pragma solidity ^0.4.23;</span><br><span class="line"></span><br><span class="line">&#x2F;**</span><br><span class="line"> * @title ERC20 interface</span><br><span class="line"> * @dev see https:&#x2F;&#x2F;github.com&#x2F;ethereum&#x2F;EIPs&#x2F;issues&#x2F;20</span><br><span class="line"> *&#x2F;</span><br><span class="line">contract ERC20Basic &#123;</span><br><span class="line">    function totalSupply() public view returns (uint256);</span><br><span class="line">    function balanceOf(address who) public view returns (uint256);</span><br><span class="line">    function transfer(address to, uint256 value) public returns (bool);</span><br><span class="line">    event Transfer(address indexed from, address indexed to, uint256 value);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">contract ERC20 is ERC20Basic &#123;</span><br><span class="line">    function allowance(address owner, address spender) public view returns (uint256);</span><br><span class="line">    function transferFrom(address from, address to, uint256 value) public returns (bool);</span><br><span class="line">    function approve(address spender, uint256 value) public returns (bool);</span><br><span class="line">    event Approval(address indexed owner, address indexed spender, uint256 value);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">contract MultiSend &#123;</span><br><span class="line"></span><br><span class="line">  function multiSendEth(address[] addresses,uint[] counts) public payable &#123;</span><br><span class="line">    for(uint i &#x3D; 0; i &lt; addresses.length; i++) &#123;</span><br><span class="line">      addresses[i].transfer(counts[i]);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>2 生成JAVA合约对象(注意选对合约文件和对象)</p>
+<p>​    将生成的ABI复制到自己新建的MultiSend.abi文件内</p>
+<p>​    将bytecode里的object复制到自己新建的MultiSend.bin文件内</p>
+<p>​    使用下方命令生成合约java文件，复制到自己的项目中</p>
+<p><code>web3j solidity generate -b F:\smart\\MultiSend.bin -a F:\smart\\MultiSend.abi -o E:\ -p com.Aw</code></p>
+<p>3合约</p>
+<p>pom</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- web3j --&gt;</span><br><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.web3j&lt;&#x2F;groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;core&lt;&#x2F;artifactId&gt;</span><br><span class="line">    &lt;version&gt;4.8.1&lt;&#x2F;version&gt;</span><br><span class="line">&lt;&#x2F;dependency&gt;</span><br></pre></td></tr></table></figure>
+
+<p>部署执行</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">  &#x2F;&#x2F;连接私链</span><br><span class="line">  web3j &#x3D; Web3j.build(new HttpService());  &#x2F;&#x2F; defaults to http:&#x2F;&#x2F;localhost:8545&#x2F;</span><br><span class="line">  &#x2F;&#x2F;魔改合约调用类</span><br><span class="line">&#x2F;&#x2F;  mightyTransactionManager &#x3D; new MightyTransactionManager(web3j, 666);</span><br><span class="line">  &#x2F;&#x2F;非冷钱包加载账户密码</span><br><span class="line">  credentials &#x3D; WalletUtils.loadCredentials(&quot;1&quot;, &quot;D:\\soft\\eth\\keystore\\UTC--2020-11-16T06-58-52.160862200Z--894c8470615037a04d86fbf9b395214564eb6b0b&quot;);</span><br><span class="line">  address &#x3D; credentials.getAddress();</span><br><span class="line">  log.info(&quot;address:&quot; + address);</span><br><span class="line">  &#x2F;&#x2F;获取私链gasPrice</span><br><span class="line">  BigInteger gasPrice &#x3D; web3j.ethGasPrice().sendAsync().get().getGasPrice();</span><br><span class="line">  log.info(&quot;gasPrice:&#123;&#125;&quot;, gasPrice);</span><br><span class="line">  log.info(&quot;blockNumber:&#123;&#125;&quot;, web3j.ethBlockNumber().sendAsync().get().getBlockNumber());</span><br><span class="line">  String contractAddress &#x3D; &quot;0x2c61d46677a9a16842bb79198b263258d6eff42a&quot;;</span><br><span class="line"></span><br><span class="line">  &#x2F;&#x2F;部署合约</span><br><span class="line">  &#x2F;&#x2F;  com.mighty.MultiSend multiSend &#x3D; com.mighty.MultiSend.deploy(web3j, credentials,new DefaultGasProvider()).send();</span><br><span class="line">  &#x2F;&#x2F;    MultiSend multiSend &#x3D; MultiSend.deploy(web3j, credentials,new DefaultGasProvider()).send();</span><br><span class="line">  &#x2F;&#x2F;加载已存在的合约</span><br><span class="line">  MultiSend multiSend &#x3D; MultiSend.load(contractAddress, web3j, credentials, new DefaultGasProvider());</span><br><span class="line"></span><br><span class="line">  String add1 &#x3D; &quot;0x0d70552bc01772e0663bd34fc0bbc88f70af974b&quot;;</span><br><span class="line">  String add2 &#x3D; &quot;0xb0cb082606f1e43375ad3b9b7398d22fe16bf249&quot;;</span><br><span class="line">  log.info(&quot;Smart contract loaded 获取合约地址：&quot; + multiSend.isValid());</span><br><span class="line">  log.info(&quot;Smart contract loaded 获取合约地址：&quot; + multiSend.getContractAddress());</span><br><span class="line">  log.info(&quot;转账前地址1余额：&quot; + web3j.ethGetBalance(add1, DefaultBlockParameterName.LATEST).send().getBalance());</span><br><span class="line">  log.info(&quot;转账前地址2余额：&quot; + web3j.ethGetBalance(add2, DefaultBlockParameterName.LATEST).send().getBalance());</span><br><span class="line"></span><br><span class="line">  List&lt;String&gt; addresses &#x3D; new ArrayList&lt;&gt;();</span><br><span class="line">  addresses.add(add1);</span><br><span class="line">  addresses.add(add2);</span><br><span class="line">  List&lt;BigInteger&gt; counts &#x3D; new ArrayList&lt;&gt;();</span><br><span class="line">  counts.add(BigInteger.valueOf(1));</span><br><span class="line">  counts.add(BigInteger.valueOf(2));</span><br><span class="line">  BigInteger weiValue &#x3D; BigInteger.valueOf(1000000);</span><br><span class="line"></span><br><span class="line">  &#x2F;&#x2F;魔改合约调用</span><br><span class="line">  &#x2F;&#x2F;  multiSend.multiSendEth(addresses, counts, weiValue, mightyTransactionManager, new DefaultGasProvider()).sendAsync().get();</span><br><span class="line">  &#x2F;&#x2F;初始合约调用</span><br><span class="line">  multiSend.multiSendEth(addresses, counts, weiValue).sendAsync().get();</span><br><span class="line">  log.info(&quot;转账后地址1余额：&quot; + web3j.ethGetBalance(add1, DefaultBlockParameterName.LATEST).sendAsync().get().getBalance());</span><br><span class="line">  log.info(&quot;转账后地址2余额：&quot; + web3j.ethGetBalance(add2, DefaultBlockParameterName.LATEST).sendAsync().get().getBalance());         </span><br></pre></td></tr></table></figure>
+
+<h2 id="ReadMe"><a href="#ReadMe" class="headerlink" title="ReadMe"></a>ReadMe</h2><p>​    本项目为小白试手代码，非最终效果，有不合理简陋之处望海涵 。  </p>
+<p>​    本项目已上传个人git，<a target="_blank" rel="noopener" href="https://github.com/zhaoyuer/SmartContract">完整代码点击</a></p>
+<p>​    魔改指的是交易和签名分开为2个项目，签名使用离线钱包，交易远程调用离线钱包获取签名。</p>
+</div><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">宇昭</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2020/11/17/my-first-blog/">http://example.com/2020/11/17/my-first-blog/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">可乐不加冰</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2020/09/29/hello-world/"><img class="next-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Hello World</div></div></a></div></nav></article></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 By 宇昭</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><section id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></section><div><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><div class="js-pjax"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><script src="https://cdn.jsdelivr.net/gh/sviptzk/HexoStaticFile@latest/Hexo/js/mouse_snow.min.js"></script></div></body></html>
